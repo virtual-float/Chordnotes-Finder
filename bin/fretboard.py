@@ -1,4 +1,4 @@
-from pygame import SRCALPHA, Surface, image
+from pygame import SRCALPHA, Surface
 
 from typing import Final
 from bin.chords import Chords
@@ -36,7 +36,6 @@ def get_ordered_notes(start_note: str) -> list[str]:
     # Zwróć serię podporządkowanych nut względem podanej początkowej nuty
     return NOTES[note_pos + 1:] + NOTES[:note_pos + 1]
 
-
 # Klasa Nuty (Note)
 class Note(Surface):
     # Konstruktor klasy Nuty (Note)
@@ -71,7 +70,7 @@ class Note(Surface):
 # Klasa Struny (String)
 class String(Surface):
     # Konstruktor klasy Struny (String)
-    def __init__(self, string_tune: str, surface_size: tuple[int, int]) -> None:
+    def __init__(self, inactive_symbol: Surface, string_tune: str, surface_size: tuple[int, int]) -> None:
         # Wywołaj konstruktor nadrzędny powierzchni ze wsparciem dla kanału alpha
         super().__init__(surface_size, SRCALPHA)
 
@@ -89,7 +88,7 @@ class String(Surface):
         # Powierzchnia dla informacji o tonie struny oraz czy ta struna nie jest grana
         self.string_info: Surface = Surface((32, 32), SRCALPHA)
         # Pobierz powierzchnię obrazu dla nieaktywnej struny z kanałej alpha (32x32) 
-        self.inactive_string_symbol = image.load('assets\\inactive.png', 'png').convert_alpha()
+        self.inactive_string_symbol = inactive_symbol
 
         # Zmienna lokalna, która przechowuje rozmiary powierzchni dla nut
         note_widths = [70, 66, 64, 66, 64, 58, 52, 54, 52, 48, 44, 38, 36]
@@ -181,7 +180,7 @@ class String(Surface):
 # Klasa gryfu (Fretboard)
 class Fretboard(Surface):
     # Konstruktor klasy gryfu (Fretboard)
-    def __init__(self, fretboard_background: Surface) -> None:
+    def __init__(self, inactive_symbol: Surface, fretboard_background: Surface) -> None:
         # Wywołaj konstruktor nadrzędny powierzchni ze wsparciem dla kanału alpha
         super().__init__((fretboard_background.get_width() + 32, fretboard_background.get_height()), SRCALPHA)
         # Wypełnij powierzchnię
@@ -202,10 +201,12 @@ class Fretboard(Surface):
         # Odstęp między strunami
         self.string_interline: Final[int] = round((self.bg.get_height() / 6) - self.string_height)
 
+        inactive_string_symbol: Final[Surface] = inactive_symbol
+
         # Algorytm, który tworzy objekty strun i dodaje te objekty do listy strun
         for tune in self.tuning:
             # Utwórz objekt klasy String
-            string_obj = String(tune, (self.string_width, self.string_height))
+            string_obj = String(inactive_string_symbol, tune, (self.string_width, self.string_height))
 
             # Przypisz objekt do listy strun
             self.strings.append(string_obj)

@@ -1,10 +1,16 @@
 import pygame
 
 
-from typing import Final
+from traceback import print_exception
+
+from typing import Final, Optional
 
 from bin.table import Table
 from bin.fretboard import Fretboard
+
+from os.path import isfile, dirname
+
+import sys
 
 pygame.init()
 
@@ -14,6 +20,30 @@ SCREEN_HEIGHT: Final[int] = 620
 SCREEN_TITLE: Final[str] = "Chordnotes Finder"
 
 
+def get_exception_output(exc_type, exc_value, tb):
+    print_exception(exc_type, exc_value, tb)
+    input('')
+
+    sys.exit(-1)
+
+# Funkcja, która załadowywuje powierzchnię z ścieżki
+def get_texture(texture_path: str) -> Optional[pygame.Surface]:
+    # Pobierz aktualną ścieżkę
+    working_directory: Final[str] = dirname(__file__)
+
+    #print(working_directory + texture_path)
+
+    # Sprawdź czy istnieje taki plik
+    if not isfile(working_directory + texture_path):
+        # Jeżeli nie, zwróć None
+        return None
+    
+    # Pobierz obraz z ścieżki
+    texture: pygame.Surface = pygame.image.load(working_directory + texture_path).convert_alpha()
+
+    # Zwróć obraz
+    return texture
+
 def main():
 
     display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -22,10 +52,12 @@ def main():
 
     chords_table = Table((SCREEN_WIDTH, 320))
 
-    fretboard_image = pygame.image.load('assets\\fretboard.png')
-    fretboard = Fretboard(fretboard_image)
+    fretboard_image = get_texture('\\assets\\fretboard.png')
+    inactive = get_texture('\\assets\\inactive.png')
 
-    print(chords_table.get_width(), SCREEN_WIDTH)
+    fretboard = Fretboard(inactive, fretboard_image)
+
+    #print(chords_table.get_width(), SCREEN_WIDTH)
 
     running = True
     while running:
@@ -51,7 +83,10 @@ def main():
 
 
     pygame.quit()
+    
 
 
 if __name__ == "__main__":
+    sys.excepthook = get_exception_output
     main()
+    
