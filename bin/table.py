@@ -43,14 +43,21 @@ class Table(pygame.Surface):
         # Przeiteruj przyciski oraz je wyświetl 
         temp_y: int = 0
         for i, button in enumerate(self.buttons, 0):
+            # Tymczasowa pozycja x dla przycisków
             temp_x = (i % 20) * self.cell_width
 
+            # Przenieś przyciski na następny wiersz co każde 20 przycisków
             if i % 20 == 0 and i > 0:
+                # Dodaj do temp_y wysokość komórki
                 temp_y += self.cell_height
 
+            # Ustaw pozycje figury kolizyjnej na x: temp_x, y: temp_y
             button.rect.topleft = (temp_x, temp_y)
 
+            # Rysuj przycisk na powierzchni na pozycji jego figury kolizyjnej
             self.blit(button, button.rect.topleft)
 
+            # Sprawdź czy przycisk został kliknięty
             if button.clicked():
+                # Ustaw przycisk wybrany
                 self.selected = button

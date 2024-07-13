@@ -1,22 +1,17 @@
 import pygame
-
+import sys
 
 from traceback import print_exception
-
 from typing import Final, Optional
-
 from bin.table import Table
 from bin.fretboard import Fretboard
-
 from os.path import isfile, dirname
 
-import sys
 
 pygame.init()
 
 SCREEN_WIDTH: Final[int] = 1000
 SCREEN_HEIGHT: Final[int] = 620
-
 SCREEN_TITLE: Final[str] = "Chordnotes Finder"
 
 
